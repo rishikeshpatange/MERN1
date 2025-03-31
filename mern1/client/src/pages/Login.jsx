@@ -15,9 +15,7 @@ export const Login = () => {
   });
 
   const handleInput = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
-
+    const { name, value } = e.target;
     setUser({
       ...user,
       [name]: value,
@@ -37,8 +35,6 @@ export const Login = () => {
         body: JSON.stringify(user),
       });
 
-      console.log("login form", response);
-
       if (response.ok) {
         const res_data = await response.json();
         storeTokenInLS(res_data.token);
@@ -50,45 +46,59 @@ export const Login = () => {
         alert("Logged in Successfully");
       } else {
         alert("Invalid credentials");
-        console.log("Invalid credentials");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error during login:", error);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-900 to-gray-900 text-white px-6">
-      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6">Login Form</h1>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
-          <input
-            type="email"
-            name="email"
-            id="loginemail"
-            placeholder="Enter your email"
-            required
-            value={user.email}
-            onChange={handleInput}
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium mb-2">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="loginpassword"
-            placeholder="Enter your password"
-            required
-            value={user.password}
-            onChange={handleInput}
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <button type="submit" className="w-full py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-300">Login</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-white px-6">
+      <div className="w-full max-w-lg p-8 rounded-3xl shadow-xl border border-gray-200">
+        <h1 className="text-3xl font-semibold text-gray-900 mb-8 text-center">
+          Welcome Back
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Enter your email"
+              required
+              value={user.email}
+              onChange={handleInput}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Enter your password"
+              required
+              value={user.password}
+              onChange={handleInput}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-medium transition-all"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

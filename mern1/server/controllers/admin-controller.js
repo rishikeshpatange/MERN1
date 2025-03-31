@@ -1,4 +1,5 @@
 const Contact = require("../models/contact-model");
+const Booking = require("../models/booking-model");
 const User = require("../models/user-model");
 
 const getAllUsers = async (req, res) => {
@@ -16,6 +17,18 @@ const getAllUsers = async (req, res) => {
 const getAllcontacts = async (req, res) => {
   try {
     const user = await Contact.find(); // to get all contacts
+    console.log(user);
+    if (!user || user.length === 0) {
+      return res.status(404).json({ message: "No contact Found" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+const getAllbookings = async (req, res) => {
+  try {
+    const user = await Booking.find(); // to get all contacts
     console.log(user);
     if (!user || user.length === 0) {
       return res.status(404).json({ message: "No contact Found" });
@@ -69,4 +82,6 @@ module.exports = {
   deleteUserById,
   getAllUserById,
   updateUserById,
+  getAllbookings
+  
 };

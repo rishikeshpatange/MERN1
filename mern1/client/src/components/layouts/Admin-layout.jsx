@@ -3,29 +3,49 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
   return (
-    <>
-      <header className="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-md p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <nav>
-            <ul className="flex gap-6">
-              <li>
-                <NavLink to="/admin/users" className="hover:text-blue-300 transition duration-300">
-                  Users
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/admin/contacts" className="hover:text-blue-300 transition duration-300">
-                  Contacts
-                </NavLink>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-      <div className="p-6 bg-gray-900 min-h-screen text-white">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white shadow-lg p-6 flex flex-col">
+        <h1 className="text-2xl font-bold text-gray-900 mb-10">Admin Dashboard</h1>
+        <nav className="flex flex-col gap-6">
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) =>
+              `p-3 rounded-lg transition ${
+                isActive ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-200"
+              }`
+            }
+          >
+            Users
+          </NavLink>
+          <NavLink
+            to="/admin/contacts"
+            className={({ isActive }) =>
+              `p-3 rounded-lg transition ${
+                isActive ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-200"
+              }`
+            }
+          >
+            Contacts
+          </NavLink>
+          <NavLink
+            to="/admin/bookings"
+            className={({ isActive }) =>
+              `p-3 rounded-lg transition ${
+                isActive ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-200"
+              }`
+            }
+          >
+            bookings
+          </NavLink>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-8 overflow-auto">
         <Outlet />
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 

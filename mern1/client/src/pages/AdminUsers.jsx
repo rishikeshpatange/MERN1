@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../store/auth';
-import {Link} from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -23,60 +23,60 @@ const AdminUsers = () => {
 
   // delete the user
 
-  const deleteUser = async(id)=>{
-
+  const deleteUser = async (id) => {
     try {
+      const response = await fetch(`http://localhost:5000/api/admin/users/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: AuthorizationToken,
+        },
+      });
+      const data = await response.json();
+      console.log(`user after delete ${data}`);
 
-    const response = await fetch(`http://localhost:5000/api/admin/users/delete/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: AuthorizationToken,
-      },
-    });
-    const data = await response.json();
-    console.log(`user after delete ${data}`)
-
-    if(response.ok){
-      getAllUsersData();
+      if (response.ok) {
+        getAllUsersData();
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-  } catch (error) {
-    console.log(error)
-  }
-
-  }
+  };
 
   useEffect(() => {
     getAllUsersData();
   }, []);
 
-
-
   return (
-    <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Users</h1>
+    <div className="p-8 bg-white text-gray-900 min-h-screen">
+      <h1 className="text-4xl font-semibold mb-8">Users</h1>
       <div className="overflow-x-auto">
-        <table className="w-full table-auto border-collapse border border-gray-700">
-          <thead>
-            <tr className="bg-blue-800 text-white">
-              <th className="border border-gray-700 px-4 py-2">Name</th>
-              <th className="border border-gray-700 px-4 py-2">Email</th>
-              <th className="border border-gray-700 px-4 py-2">Phone</th>
-              <th className="border border-gray-700 px-4 py-2">Actions</th>
+        <table className="w-full table-auto border-collapse shadow-lg rounded-lg border border-gray-300">
+          <thead className="bg-gray-100 border-b border-gray-300">
+            <tr className="h-16">
+              <th className="px-6 py-4 text-left">Name</th>
+              <th className="px-6 py-4 text-left">Email</th>
+              <th className="px-6 py-4 text-left">Phone</th>
+              <th className="px-6 py-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {users.length > 0 ? (
-              users.map((user, index) => (
-                <tr key={index} className="border border-gray-700">
-                  <td className="border border-gray-700 px-4 py-2">{user.username}</td>
-                  <td className="border border-gray-700 px-4 py-2">{user.email}</td>
-                  <td className="border border-gray-700 px-4 py-2">{user.phone}</td>
-                  <td className="border border-gray-700 px-4 py-2 flex gap-2">
-                    <button className="px-3 py-1 bg-yellow-500 text-black font-medium rounded hover:bg-yellow-600 transition duration-300">
-                     <Link to={`/admin/users/${user._id}/edit`}>Update</Link> 
-                    </button>
-                    <button onClick={() => deleteUser(user._id)} className="px-3 py-1 bg-red-500 text-white font-medium rounded hover:bg-red-600 transition duration-300">
+              users.map((user) => (
+                <tr key={user._id} className="hover:bg-gray-50 transition duration-300 border-b border-gray-300 h-16">
+                  <td className="px-6 py-4">{user.username}</td>
+                  <td className="px-6 py-4">{user.email}</td>
+                  <td className="px-6 py-4">{user.phone}</td>
+                  <td className="px-6 py-4 flex gap-4 text-sm">
+                    <Link
+                      to={`/admin/users/${user._id}/edit`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Update
+                    </Link>
+                    <button
+                      onClick={() => deleteUser(user._id)}
+                      className="text-red-600 hover:underline"
+                    >
                       Delete
                     </button>
                   </td>
@@ -84,7 +84,7 @@ const AdminUsers = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4">No users found.</td>
+                <td colSpan="4" className="text-center py-8 text-gray-500">No users found.</td>
               </tr>
             )}
           </tbody>

@@ -1,67 +1,59 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../store/auth";
 
-const AdminUpdate = () => {
-  const [data, setData] = useState({
-    username: "",
-    email: "",
-    phone: "",
-  });
+const defaultBookingData = {
+  username: "",
+  email: "",
+  vehicle: "",
+  phone: "",
+};
 
-  const params = useParams();
-  const { AuthorizationToken } = useAuth();
+const Booking = () => {
+  const { user: userDetails } = useAuth();
+  const [user, setUser] = useState(defaultBookingData);
 
-  const getSingleUserData = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/admin/users/${params.id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: AuthorizationToken,
-          },
-        }
-      );
-      const userData = await response.json();
-      console.log("User single data", userData);
-      setData(userData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  // Populate form data when user is available
   useEffect(() => {
-    getSingleUserData();
-  }, []);
+    if (userDetails) {
+      setUser({
+        username: userDetails.username || "",
+        email: userDetails.email || "",
+        vehicle: "",
+        phone: "",
+      });
+    }
+  }, [userDetails]);
 
   const handleInput = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
   };
+
+  const URI = "http://localhost:5000/api/form/booking";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/admin/users/update/${params.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: AuthorizationToken,
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch(URI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
 
       if (response.ok) {
-        alert("Updated Successfully");
+        alert("Booking successful!");
+        setUser({ ...defaultBookingData, username: userDetails?.username || "", email: userDetails?.email || "" });
       } else {
-        alert("User not updated");
+        alert("Booking failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.error("Booking error:", error);
+      alert("An error occurred while booking.");
     }
   };
 
@@ -69,12 +61,12 @@ const AdminUpdate = () => {
     <div className="min-h-screen flex items-center justify-center bg-white px-6">
       <div className="w-full max-w-lg p-8 rounded-3xl shadow-xl border border-gray-200">
         <h1 className="text-3xl font-semibold text-gray-900 mb-8 text-center">
-          Update User
+          Vehicle Booking
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
-              Username
+            Your Full Name
             </label>
             <input
               type="text"
@@ -83,14 +75,13 @@ const AdminUpdate = () => {
               className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Username"
               required
-              value={data.username}
+              value={user.username}
               onChange={handleInput}
             />
           </div>
-
           <div>
             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-              Email
+             Primary Email ID
             </label>
             <input
               type="email"
@@ -99,32 +90,48 @@ const AdminUpdate = () => {
               className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Email"
               required
-              value={data.email}
+              value={user.email}
               onChange={handleInput}
             />
           </div>
-
+          <div>
+            <label htmlFor="vehicle" className="block text-gray-700 font-medium mb-2">
+              Vehicle
+            </label>
+            <select
+              name="vehicle"
+              id="vehicle"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+              value={user.vehicle}
+              onChange={handleInput}
+            >
+              <option value="">Select Vehicle</option>
+              <option value="TESSERACT">TESSERACT</option>
+              <option value="ShockWave">ShockWave</option>
+              <option value="f77 Super Street">f77 Super Street</option>
+            </select>
+          </div>
           <div>
             <label htmlFor="phone" className="block text-gray-700 font-medium mb-2">
-              Phone
+            Primary Mobile Number
             </label>
             <input
-              type="number"
+              type="text"
               name="phone"
               id="phone"
               className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Phone"
+              placeholder="Phone Number"
               required
-              value={data.phone}
+              value={user.phone}
               onChange={handleInput}
             />
           </div>
-
           <button
             type="submit"
             className="w-full py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-medium transition-all"
           >
-            Update Now
+            Book Now
           </button>
         </form>
       </div>
@@ -132,4 +139,4 @@ const AdminUpdate = () => {
   );
 };
 
-export default AdminUpdate;
+export default Booking;

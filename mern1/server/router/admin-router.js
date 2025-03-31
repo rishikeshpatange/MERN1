@@ -14,4 +14,6 @@ router.route("/users/delete/:id").delete(authMiddleware, adminMiddleware, adminC
 
 router.route("/contacts").get(authMiddleware, adminMiddleware, adminController.getAllcontacts);
 
+router.route("/bookings").get(authMiddleware, adminMiddleware, adminController.getAllbookings);
+
 module.exports = router; 
